@@ -20,7 +20,7 @@
     .cooldown{ background-color: orange; }
   </style>
 </head>
-<body>
+<body class="bg-dark text-light">
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
   <div class="container-fluid">
     <ul class="navbar-nav">
@@ -33,6 +33,7 @@
   </div>
 </nav>
 
+
 <div class="container my-4">
   <h1 class="mb-4">Workout Timer</h1>
 
@@ -40,38 +41,30 @@
   <form class="row g-3 mb-3">
     <div class="col-md-3">
       <label for="tension" class="form-label">Anspannen (Sek.)</label>
-      <input type="number" class="form-control" id="tension" value="5" min="0.5" step="0.5">
+      <input type="number" class="form-control bg-dark text-light border-secondary" id="tension" value="5" min="0.5" step="0.5">
     </div>
     <div class="col-md-3">
       <label for="relax" class="form-label">Lockern (Sek.)</label>
-      <input type="number" class="form-control" id="relax" value="3" min="0.5" step="0.5">
+      <input type="number" class="form-control bg-dark text-light border-secondary" id="relax" value="3" min="0.5" step="0.5">
     </div>
     <div class="col-md-3">
       <label for="reps" class="form-label">Wiederholungen</label>
-      <input type="number" class="form-control" id="reps" value="5" min="1" step="1">
+      <input type="number" class="form-control bg-dark text-light border-secondary" id="reps" value="5" min="1" step="1">
     </div>
     <div class="col-md-3">
       <label for="cooldown" class="form-label">Cooldown (Sek.)</label>
-      <input type="number" class="form-control" id="cooldown" value="5" min="0.5" step="0.5">
+      <input type="number" class="form-control bg-dark text-light border-secondary" id="cooldown" value="5" min="0.5" step="0.5">
     </div>
   </form>
 
-  <!-- Kontrollkästchen für Sound -->
-  <div class="form-check mb-3">
-    <input class="form-check-input" type="checkbox" id="soundToggle" checked>
-    <label class="form-check-label" for="soundToggle">
-      Piepton bei 2s und 1s
-    </label>
-  </div>
-
   <!-- Buttons -->
   <div class="mb-4">
-    <button type="button" class="btn btn-success me-2" onclick="startTimer()">Start</button>
-    <button type="button" class="btn btn-danger" onclick="stopTimer()">Abbrechen</button>
+    <button type="button" class="btn btn-outline-success me-2" onclick="startTimer()">Start</button>
+    <button type="button" class="btn btn-outline-danger" onclick="stopTimer()">Abbrechen</button>
   </div>
 
   <!-- Timer-Anzeige -->
-  <div class="card">
+  <div class="card bg-dark border-secondary">
     <div class="card-body text-center">
       <div id="status" class="ready mb-3">Bereit</div>
       <h2 id="countdown">0.00s</h2>
@@ -83,19 +76,6 @@
 <script>
   let interval;
 
-  function playBeep(duration = 0.2, frequency = 800) {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    oscillator.type = "sine";
-    oscillator.frequency.setValueAtTime(frequency, audioCtx.currentTime);
-    gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
-    oscillator.start();
-    oscillator.stop(audioCtx.currentTime + duration);
-  }
-
   function startTimer() {
     clearInterval(interval);
 
@@ -103,7 +83,6 @@
     const relax    = Math.max(0.5, parseFloat(document.getElementById('relax').value));
     const reps     = Math.max(1,   parseInt(document.getElementById('reps').value));
     const cooldown = Math.max(0.5, parseFloat(document.getElementById('cooldown').value));
-    const soundOn  = document.getElementById('soundToggle').checked;
 
     let currentRep = 1;
     let phase = 'cooldown';
@@ -117,8 +96,6 @@
       let timeLeft = (endTime - now) / 1000;
 
       if (timeLeft <= 0) {
-        // langer Beep bei jedem Wechsel
-        if (soundOn) playBeep(0.4);
 
         if (phase === 'cooldown') {
           phase = 'tension';
@@ -144,14 +121,6 @@
         }
       } else {
         document.getElementById('countdown').textContent = timeLeft.toFixed(2) + 's';
-
-        // kurze Beeps bei 2s und 1s
-        if (soundOn) {
-          const rounded = Math.round(timeLeft * 100) / 100;
-          if (Math.abs(rounded - 2.00) < 0.03 || Math.abs(rounded - 1.00) < 0.03) {
-            playBeep(0.2);
-          }
-        }
       }
     }, 50);
   }

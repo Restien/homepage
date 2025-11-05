@@ -10,3 +10,8 @@ flowchart TD
     n1 --> A
 
 ```
+
+## TODO
+- CNW rüberholen
+- Index als zentrale Navigation, keine Subpage-Subpage Verknüpfungen über Nav
+- Legenden von Caskoa löschen
